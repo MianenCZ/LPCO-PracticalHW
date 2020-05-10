@@ -5,7 +5,14 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NonTS", "NonTS\NonTS.csproj", "{60564226-3508-4849-8A5D-3634C473BC2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolTests", "SolTests\SolTests.csproj", "{61C69A38-6A78-499A-ABD5-F595F4764025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolTests", "SolTests\SolTests.csproj", "{61C69A38-6A78-499A-ABD5-F595F4764025}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB314B0C-C00E-4E05-9156-DD0A288FF5D2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
