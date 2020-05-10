@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NonTS": {
+      "commandName": "Project",
+      "commandLineArgs": "vstup-005.txt"
+    }
+  }
+}
