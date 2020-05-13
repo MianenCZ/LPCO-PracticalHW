@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using Utils;
 
 namespace NonTS
 {
@@ -23,52 +24,32 @@ namespace NonTS
 
 
             Graph g = Graph.Parse(File.ReadAllLines(args[0]));
-            TextWriter wr = new StreamWriter(File.OpenWrite($"{args[0]}.out"));
+            TextWriter wr = new StreamWriter(File.OpenWrite($"{args[0]}.mod"));
             //TextWriter wr = Console.Out;
-            DateTime start = DateTime.Now;
-
-
-            wr.Write(g.Edges.FormateLines(x => string.Format("var x{0}, integer, >= 0, <= 1;", x.Id)));
-
-            Console.WriteLine("Variables created.");
-
-            wr.Write("minimize obj: ");
-            wr.Write(g.Edges.FormateLine(x => string.Format("({0} * x{1})", x.Weith, x.Id), " + ", ";\n"));
-
-            Console.WriteLine("Objective function created.");
-
-            var cycles3 = g.Oriented3Cycles();
-            cycles3.FormateLines( wr,
-                (x,i) => $"s.t. c{i}: x{x[0].Id} + x{x[1].Id} + x{x[2].Id} >= 1;"
-                );
-
-            Console.WriteLine("3-cycle constrains created.");
-
-            var cycles4 = g.Oriented4Cycles();
-            cycles4.FormateLines( wr,
-                (x,i) => $"s.t. c{cycles3.Count + i}: x{x[0].Id} + x{x[1].Id} + x{x[2].Id} + x{x[3].Id} >= 1;"
-                );
-
-
-            Console.WriteLine("4-cycle constrains created.");
-
+            wr.Write("set Edges := {");
+            wr.Write(g.Edges.FormateLine(x => $"({x.A},{x.B},{x.Weith})", ", ", ""));
+            wr.Write("};\n");
+            wr.WriteLine("var x{ (i, j, w) in Edges}, binary;");
+            wr.WriteLine("minimize obj: sum{ (i, j, w) in Edges}");
+            wr.WriteLine("x[i, j, w] * w;");
+            wr.WriteLine("s.t.cycle3{ (i, j, a) in Edges, (j, k, b) in Edges, (k, l, c) in Edges: l == i }: x[i, j, a] + x[j, k, b] + x[k, l, c] >= 1;");
+            wr.WriteLine("s.t.cycle4{ (i, j, a) in Edges, (j, k, b) in Edges, (k, l, c) in Edges, (l, m, d) in Edges: m == i }: x[i, j, a] + x[j, k, b] + x[k, l, c] + x[l, m, d] >= 1;");
             wr.WriteLine("solve;");
             wr.WriteLine("printf \"#OUTPUT:\\n\";");
-            wr.Write(g.Edges.FormateLines(
-                x => string.Format("printf (if x{0} > 0 then \"{1} --> {2} ({3})\\n\" else \"\"), 3;", x.Id, x.A, x.B, x.Weith)));
+            wr.WriteLine("printf \"OPTIMUM = %d\\nz\", sum{(i,j,w) in Edges: x[i,j,w]>0} w;");
+            wr.WriteLine("printf{(i,j,w) in Edges : x[i,j,w]>0} \"Edge %d --> %d (%d)\\n\", i, j, w;");
             wr.WriteLine("printf \"#OUTPUT END\\n\";");
             wr.WriteLine("end;");
             wr.Flush();
-
-
-            Console.WriteLine("output code created.");
-            Console.WriteLine();
-            Console.WriteLine("Total time: {0} sec", (DateTime.Now - start).TotalSeconds);
         }
 
         static void PrintHelp()
         {
-
+            Console.WriteLine("Usage:");
+            Console.WriteLine("\tnonTS.exe filename");
+            Console.WriteLine();
+            Console.WriteLine("Reads directed weighed graph from <filename> inputfile and converts it to Linear Program for glpsol(.exe) linear program solver.");
+            Console.WriteLine("Result is wrote into <filename>.mod file ");
         }
     }
 }

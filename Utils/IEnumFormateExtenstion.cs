@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace NonTS
+namespace Utils
 {
     public static class IEnumFormateExtenstion
     {
-
-        public static string FormateLine<T>(this IEnumerable<T> collection, Func<T, string> pred, string delim)
+        public static string FormateLine<T>(this IEnumerable<T> collection, Func<T, string> formater, string delim)
         {
-            return FormateLine(collection, pred, delim, delim);
+            return FormateLine(collection, formater, delim, delim);
         }
 
-        public static string FormateLine<T>(this IEnumerable<T> collection, Func<T, string> pred, string innerDelim, string lastDelim)
+        public static string FormateLine<T>(
+            this IEnumerable<T> collection,
+            Func<T, string> formater,
+            string innerDelim,
+            string lastDelim)
         {
             StringBuilder bld = new StringBuilder();
 
@@ -23,14 +25,13 @@ namespace NonTS
             int i = 0;
             foreach (var item in collection)
             {
-                bld.Append(pred(item));
-                if(i != size - 1)
+                bld.Append(formater(item));
+                if (i != size - 1)
                     bld.Append(innerDelim);
                 else
                     bld.Append(lastDelim);
                 i++;
             }
-
             return bld.ToString();
         }
 
@@ -96,6 +97,18 @@ namespace NonTS
                 wr.WriteLine(contFormat(item, i));
                 i++;
             }
+        }
+
+        public static void ForEachElse<T>(this IEnumerable<T> source, Func<T, bool> action, Action @else)
+        {
+            foreach (var i in source)
+            {
+                if (!action(i))
+                {
+                    return;
+                }
+            }
+            @else();
         }
     }
 }

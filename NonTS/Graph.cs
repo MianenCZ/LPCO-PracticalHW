@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -59,100 +60,6 @@ namespace NonTS
         public override string ToString()
         {
             return string.Format("{0} --{3} {1} {2}", A, B, (Weithed) ? $"({Weithed})" : "", (Oriented) ? ">" : "");
-        }
-    }
-
-    public class EdgeCycleComparer : IEqualityComparer<Edge[]>
-    {
-        public bool Equals([AllowNull] Edge[] x, [AllowNull] Edge[] y)
-        {
-            if(x is object && y is object && x.Length == y.Length)
-            {
-                for (int i = 0; i < x.Length; i++)
-                {
-                    if (!Equals(x[i], y[i]))
-                        return false;
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public int GetHashCode([DisallowNull] Edge[] obj)
-        {
-            int hash = 0;
-            for (int i = 0; i < obj.Length; i++)
-            {
-                hash *= obj[i].GetHashCode() + i;
-            }
-            return hash;
-        }
-    }
-
-    public static class GraphExt
-    {
-        public static List<Edge[]> Oriented3Cycles(this Graph g)
-        {
-            //var res = new List<Edge[]>();
-            var res = new HashSet<Edge[]>(new EdgeCycleComparer());
-
-            var edges = g.Edges;
-
-
-            for (int i = 0; i < g.EdgesCount; i++)
-            {
-                for (int j = 0; j < g.EdgesCount; j++)
-                {
-                    if (i != j)
-                    {
-                        for (int k = 0; k < g.EdgesCount; k++)
-                        {
-                            if (j != k && i != k
-                                && edges[i].B == edges[j].A && edges[j].B == edges[k].A && edges[k].B == edges[i].A)
-                            {
-                                res.Add(new[] { edges[i], edges[j], edges[k] }.OrderBy(x=> x.Id).ToArray());
-                            }
-                        }
-                    }
-                }
-            }
-            return res.ToList();
-        }
-
-        public static List<Edge[]> Oriented4Cycles(this Graph g)
-        {
-            //var res = new List<Edge[]>();
-            var res = new HashSet<Edge[]>(new EdgeCycleComparer());
-
-            var edges = g.Edges;
-
-            for (int i = 0; i < g.EdgesCount; i++)
-            {
-                for (int j = 0; j < g.EdgesCount; j++)
-                {
-                    //i,j
-                    if (i != j && edges[i].B == edges[j].A)
-                    {
-                        for (int k = 0; k < g.EdgesCount; k++)
-                        {
-                            //i,j,k
-                            if ( j != k && edges[j].B == edges[k].A)
-                            {
-                                for (int l = 0; l < g.EdgesCount; l++)
-                                {
-                                    //i,j,k,l
-                                    if (i != l && l != i &&(
-                                    (edges[i].B == edges[j].A && edges[j].B == edges[k].A && edges[k].B == edges[l].A && edges[l].B == edges[i].A)))
-                                    {
-                                        res.Add(new[] { edges[i], edges[j], edges[k], edges[l] }.OrderBy(x => x.Id).ToArray());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return res.ToList();
         }
     }
 }
