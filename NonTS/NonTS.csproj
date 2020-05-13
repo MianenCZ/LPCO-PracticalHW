@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>not_TS</AssemblyName>
+    <AssemblyName>nonTS</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

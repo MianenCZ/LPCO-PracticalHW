@@ -22,9 +22,18 @@ namespace NonTS
                 Environment.Exit(0);
             }
 
+            Graph g = null;
+            TextWriter wr = null;
+            try
+            {
+                g = Graph.Parse(File.ReadAllLines(args[0]));
+                wr = new StreamWriter(File.OpenWrite($"{args[0]}.mod"));
+            }catch (IOException ex)
+            {
+                Console.WriteLine($"File error: {ex.Message}");
+                Environment.Exit(1);
+            }
 
-            Graph g = Graph.Parse(File.ReadAllLines(args[0]));
-            TextWriter wr = new StreamWriter(File.OpenWrite($"{args[0]}.mod"));
             //TextWriter wr = Console.Out;
             wr.Write("set Edges := {");
             wr.Write(g.Edges.FormateLine(x => $"({x.A},{x.B},{x.Weith})", ", ", ""));
@@ -41,15 +50,19 @@ namespace NonTS
             wr.WriteLine("printf \"#OUTPUT END\\n\";");
             wr.WriteLine("end;");
             wr.Flush();
+
+            Console.WriteLine($"Model file \"{args[0]}.mod\" created");
         }
 
         static void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("\tnonTS.exe filename");
+            Console.WriteLine("Usage: nonTS.exe filename");
+            Console.WriteLine("       Reads directed weighed graph from <filename> inputfile and converts it to Linear Program for glpsol(.exe) linear program solver.");
+            Console.WriteLine("       Result is written into <filename>.mod file ");
             Console.WriteLine();
-            Console.WriteLine("Reads directed weighed graph from <filename> inputfile and converts it to Linear Program for glpsol(.exe) linear program solver.");
-            Console.WriteLine("Result is wrote into <filename>.mod file ");
+            Console.WriteLine("Options: ");
+            Console.WriteLine("\t-h --help         Show this help");
+            Console.WriteLine("\t?                 Show this help");
         }
     }
 }
