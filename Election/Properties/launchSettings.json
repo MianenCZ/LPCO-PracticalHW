@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Election": {
+      "commandName": "Project",
+      "commandLineArgs": "vstup-s2.txt"
+    }
+  }
+}
