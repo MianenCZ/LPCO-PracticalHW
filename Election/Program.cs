@@ -59,7 +59,7 @@ namespace Election
             wr.WriteLine("solve;");
             wr.WriteLine("printf \"#OUTPUT: %d\\n\", sum{k in (0 .. N-1)}x[k];");
             wr.WriteLine("printf{v in V, k in (0 .. N-1): y[v,k] == 1} \"v_%d: %d\\n\", v, k;");
-            wr.WriteLine("printf \"#OUTPUT:\\n\";");
+            wr.WriteLine("printf \"#OUTPUT END\\n\";");
             wr.WriteLine("end;");
             wr.Flush();
 
